@@ -37,7 +37,7 @@ HandWrittenNotesTaker is a web-based application that allows users to create, ed
 
 ### Usage
 1. **Drawing**: Select the pen tool and start drawing on the canvas. Use the highlighter for highlighting text or areas.
-   ![Drawing Example](images/image02.png)
+   ![Drawing Example](images/image.png)
 2. **Text Input**: Click the text tool to open the text editor. Type your text and format it using the toolbar options.
    ![Text Input Example](images/image03.png)
 3. **Brush Size and Color**: Adjust the brush size using the slider and select a color using the color picker.
