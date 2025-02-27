@@ -1,0 +1,1153 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.toolbar {
+    width: 100%;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px;
+    border-right: 1px solid #ddd;
+    padding-right: 20px;
+}
+
+.tool-group:last-child {
+    border-right: none;
+}
+
+.toolbar button {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toolbar button:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-1px);
+}
+
+.toolbar button.active {
+    background-color: #e0e0e0;
+    border-color: #999;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.color-palette {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.color-btn {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #ccc;
+    padding: 0;
+    transition: transform 0.2s ease;
+}
+
+.color-btn:hover {
+    transform: scale(1.1);
+}
+
+.color-btn.active {
+    box-shadow: 0 0 0 2px #333;
+}
+
+.workspace {
+    width: 100%;
+    height: calc(100% - 40px);
+    position: relative;
+    border: none;
+    background: white;
+    overflow: auto;
+    display: flex;
+}
+
+/* Add page navigation sidebar */
+.page-sidebar {
+    width: 200px;
+    border-right: 1px solid #ddd;
+    background: #f8f9fa;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.page-sidebar.collapsed {
+    width: 40px;
+    padding: 5px;
+}
+
+.page-sidebar.collapsed .page-thumbnails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.page-sidebar.collapsed .page-preview {
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666;
+}
+
+.page-sidebar.collapsed .add-page-btn {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-sidebar.collapsed .page-preview.active {
+    background: #0066ff;
+    color: white;
+}
+
+/* Add page number to preview */
+.page-number {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(0,0,0,0.1);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.page-sidebar.collapsed .page-number {
+    position: static;
+    background: none;
+    padding: 0;
+}
+
+.collapse-btn {
+    position: absolute;
+    right: -12px;
+    top: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: transform 0.3s ease;
+}
+
+.page-sidebar.collapsed .collapse-btn {
+    transform: rotate(180deg);
+}
+
+.collapse-btn:hover {
+    background: #f0f0f0;
+}
+
+.page-preview {
+    width: 150px;
+    height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-preview canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.page-preview:hover {
+    border: 1px solid #0066ff;
+}
+
+.page-preview.active {
+    border: 2px solid #0066ff;
+    margin: -1px;
+}
+
+/* Canvas container */
+.canvas-container {
+    width: 100%;
+    height: auto;
+    position: relative;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    overflow: auto;
+}
+
+.text-layer {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1200px;
+    height: 1600px;
+    pointer-events: none; /* Always none to allow drawing */
+    background: transparent;
+    z-index: 1;
+}
+
+.text-layer.text-active {
+    /* No pointer-events change when active */
+}
+
+#drawingCanvas {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    max-height: 1600px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    cursor: crosshair;
+    z-index: 0; /* Ensure canvas is below text layer */
+}
+
+/* Grid background */
+.workspace.grid #drawingCanvas {
+    background-image: 
+        linear-gradient(#ddd 1px, transparent 1px),
+        linear-gradient(90deg, #ddd 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.workspace.lined #drawingCanvas {
+    background-image: linear-gradient(#ddd 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.workspace.dotted #drawingCanvas {
+    background-image: radial-gradient(#ddd 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+#drawingCanvas.text-mode {
+    cursor: text;
+}
+
+#colorPicker {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#brushSize {
+    width: 100px;
+}
+
+#brushSizeLabel {
+    min-width: 40px;
+    text-align: center;
+}
+
+#textOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#textOverlay.show {
+    display: flex;
+}
+
+.text-editor {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 500px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.text-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.text-toolbar select {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.text-style-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.text-style-buttons button {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+}
+
+.text-style-buttons button.active {
+    background: #e0e0e0;
+}
+
+#textInput {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    font-family: Arial;
+    font-size: 16px;
+}
+
+.text-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.text-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#applyText {
+    background: #4CAF50;
+    color: white;
+}
+
+#cancelText {
+    background: #f0f0f0;
+}
+
+.draggable-text {
+    position: absolute;
+    cursor: default;
+    user-select: none;
+    padding: 5px 20px 5px 5px;
+    border: 1px dashed transparent;
+    min-width: 50px;
+    min-height: 20px;
+    pointer-events: none; /* Default to none */
+    z-index: 2;
+}
+
+/* Only enable pointer events when text tool is active */
+.text-layer.text-active .draggable-text {
+    pointer-events: all;
+}
+
+.text-delete-btn,
+.text-resize-handle {
+    pointer-events: all; /* Always clickable when visible */
+    z-index: 3;
+}
+
+/* Add new style for selected text */
+.draggable-text.selected {
+    border: 1px dashed #0066ff;
+    cursor: move;
+}
+
+.text-delete-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ff4444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: none;
+    padding: 0;
+    line-height: 1;
+    font-size: 16px;
+}
+
+.text-resize-handle {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 10px;
+    height: 10px;
+    background: #0066ff;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: se-resize;
+    display: none;
+}
+
+/* Add theme styles */
+:root {
+    --bg-color: #f0f0f0;
+    --container-bg: white;
+    --toolbar-bg: #f8f9fa;
+    --border-color: #ddd;
+    --text-color: #333;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --container-bg: #2d2d2d;
+    --toolbar-bg: #363636;
+    --border-color: #404040;
+    --text-color: #e0e0e0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.container {
+    background-color: var(--container-bg);
+}
+
+.toolbar {
+    background-color: var(--toolbar-bg);
+}
+
+/* Add brush style indicators */
+.brush-styles button i {
+    font-size: 1.2em;
+}
+
+.brush-style.active {
+    color: #4CAF50;
+}
+
+/* Shape tools */
+.shapes button i {
+    font-size: 1.2em;
+}
+
+/* Highlighter colors */
+.highlighter-colors {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.highlighter-btn {
+    width: 25px;
+    height: 25px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.highlighter-btn:hover {
+    opacity: 1;
+}
+
+.highlighter-btn.active {
+    outline: 2px solid var(--text-color);
+}
+
+/* Canvas styles */
+.workspace {
+    border-color: var(--border-color);
+    background-color: var(--container-bg);
+}
+
+/* Add these styles */
+.line-styles button i {
+    font-size: 1.2em;
+}
+
+.line-style.active {
+    color: #4CAF50;
+}
+
+.highlighter-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.highlighter-btn i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 0.8em;
+}
+
+.highlighter-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.highlighter-btn.active {
+    outline: 2px solid var(--text-color);
+    opacity: 1;
+}
+
+/* Remove all selection-related styles */
+.selection-box,
+.selection-handle,
+#drawingCanvas.selecting {
+    /* Remove these style blocks completely */
+}
+
+/* Add styles for the add page button in sidebar */
+.add-page-btn {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px dashed #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-page-btn:hover {
+    border-color: #0066ff;
+    background: #f0f0f0;
+}
+
+.add-page-btn i {
+    font-size: 1.2em;
+    color: #666;
+}
+
+/* Fullscreen mode styles */
+.container.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    background: var(--bg-color);
+    z-index: 9999;
+}
+
+.container.fullscreen .toolbar,
+.container.fullscreen .page-sidebar {
+    display: none;
+}
+
+.container.fullscreen .workspace {
+    height: 100vh;
+    border: none;
+    border-radius: 0;
+}
+
+.container.fullscreen .canvas-container {
+    padding: 20px;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: auto;
+    background: #f0f0f0;
+}
+
+.container.fullscreen #drawingCanvas {
+    width: 800px !important;
+    height: 1000px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.container.fullscreen .text-layer {
+    width: 800px !important;
+    height: 1000px !important;
+}
+
+.fullscreen-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 15px;
+    display: none;
+    z-index: 10000;
+    transition: transform 0.3s ease;
+}
+
+.fullscreen-controls.collapsed {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    overflow: hidden;
+    transform: translateX(calc(100% - 40px));
+}
+
+.fullscreen-controls.collapsed .fullscreen-controls-content {
+    display: none;
+}
+
+/* Add toggle button styles */
+.fullscreen-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    z-index: 10001;
+    transition: all 0.3s ease;
+}
+
+.fullscreen-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+.container.fullscreen ~ .fullscreen-toggle-btn:not(.hidden) {
+    display: flex;
+}
+
+.fullscreen-controls-content {
+    padding: 10px 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Update other fullscreen control styles to use .fullscreen-controls-content */
+.fullscreen-controls-content .minimal-tools {
+    display: flex;
+    gap: 10px;
+}
+
+#pageIndicatorFullscreen {
+    color: white;
+    font-size: 14px;
+    margin: 0 10px;
+    min-width: 80px;
+    text-align: center;
+}
+
+#prevPageFullscreen,
+#nextPageFullscreen {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 1.2em;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+#prevPageFullscreen:hover,
+#nextPageFullscreen:hover {
+    opacity: 1;
+}
+
+#prevPageFullscreen:disabled,
+#nextPageFullscreen:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.minimal-tools {
+    display: flex;
+    gap: 10px;
+}
+
+.minimal-tools button,
+.minimal-colors button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.minimal-tools button:hover,
+.minimal-colors button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.minimal-tools button.active {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.minimal-colors {
+    display: flex;
+    gap: 10px;
+    padding-left: 15px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.minimal-colors .color-btn {
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.minimal-colors .color-btn.active {
+    border-color: white;
+    transform: scale(1.1);
+}
+
+#exitFullscreen {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 1.2em;
+}
+
+#exitFullscreen:hover {
+    color: #ff4444;
+}
+
+/* Update fullscreen controls styles */
+.minimal-tools input[type="range"] {
+    width: 100px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    -webkit-appearance: none;
+}
+
+.minimal-tools input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#brushSizeLabelFullscreen {
+    color: white;
+    min-width: 40px;
+    text-align: center;
+}
+
+#deletePageFullscreen {
+    color: #ff4444;
+}
+
+#deletePageFullscreen:hover {
+    background: rgba(255, 0, 0, 0.3);
+}
+
+/* Update page actions styles for normal mode */
+.page-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.add-page-btn,
+.delete-page-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 2px dashed #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none; /* Remove flex: 1 to prevent stretching */
+}
+
+.delete-page-btn {
+    border-color: #ffdddd;
+    color: #ff4444;
+}
+
+.delete-page-btn:hover {
+    background: #fff5f5;
+    border-color: #ff4444;
+}
+
+/* Update collapsed sidebar styles */
+.page-sidebar.collapsed .add-page-btn,
+.page-sidebar.collapsed .delete-page-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin: 5px 0;
+}
+
+/* Add styles for page navigation in fullscreen */
+.page-navigation {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 0 10px;
+}
+
+#pageIndicatorFullscreen {
+    color: white;
+    font-size: 14px;
+    min-width: 60px;
+    text-align: center;
+}
+
+#prevPageFullscreen,
+#nextPageFullscreen {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 1.2em;
+    opacity: 0.7;
+    transition: all 0.2s;
+}
+
+#prevPageFullscreen:hover,
+#nextPageFullscreen:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+#prevPageFullscreen:disabled,
+#nextPageFullscreen:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Update page actions styles */
+.page-actions-fullscreen {
+    display: flex;
+    gap: 10px;
+    padding: 0 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.page-actions-fullscreen button {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Add brush size control styles */
+.brush-size-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#brushSizeFullscreen {
+    width: 100px;
+    height: 4px;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+#brushSizeFullscreen::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#brushSizeLabelFullscreen {
+    color: white;
+    min-width: 40px;
+    font-size: 14px;
+}
+
+/* Show controls only in fullscreen mode */
+.container.fullscreen ~ .fullscreen-controls {
+    display: flex;
+}
+
+.container.fullscreen ~ .fullscreen-controls.hidden {
+    display: none;
+}
+
+/* Add styles for file actions */
+.file-actions button,
+.file-actions-fullscreen button {
+    color: #4CAF50;
+}
+
+.file-actions-fullscreen {
+    display: flex;
+    gap: 10px;
+    padding: 0 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.file-actions-fullscreen button {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Update hover states */
+.file-actions button:hover {
+    background-color: #e8f5e9;
+}
+
+.file-actions-fullscreen button:hover {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+/* Add loading overlay styles */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.loading-content {
+    background: white;
+    padding: 20px 40px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.loading-content i {
+    font-size: 2em;
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+.loading-content p {
+    margin: 0;
+    color: #333;
+}
+
+/* Update file action buttons */
+.file-actions button,
+.file-actions-fullscreen button {
+    color: #4CAF50;
+}
+
+#exportPDF,
+#exportPDFFullscreen {
+    color: #e91e63;
+}
+
+.file-actions button:hover {
+    background-color: #e8f5e9;
+}
+
+#exportPDF:hover {
+    background-color: #fce4ec;
+}
+
+.file-actions-fullscreen button:hover {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+#exportPDFFullscreen:hover {
+    background: rgba(233, 30, 99, 0.2);
+}
+
+/* Add styles for import button */
+#importPDF,
+#importPDFFullscreen {
+    /* Remove these style blocks */
+}
+
+/* Update file actions spacing */
+.file-actions,
+.file-actions-fullscreen {
+    gap: 8px;
+}
+
+/* Remove PDF viewer styles */
+.pdf-container {
+    /* Remove all PDF viewer related styles */
+}
+
+/* Add zoom control styles */
+.zoom-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.zoom-control button {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 1.2em;
+    opacity: 0.7;
+    transition: all 0.2s;
+}
+
+.zoom-control button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.zoom-level {
+    min-width: 60px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Add styles for the collapse button */
+#collapseToolbar {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    font-size: 1.2em;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    margin-right: 10px;
+}
+
+#collapseToolbar:hover {
+    opacity: 1;
+}
+
+#collapseToolbar.collapsed {
+    transform: rotate(180deg);
+}
+
+/* Update fullscreen controls for collapse animation */
+.fullscreen-controls {
+    transition: transform 0.3s ease;
+}
+
+.fullscreen-controls.collapsed {
+    transform: translateX(calc(100% - 40px));
+}
+
+.fullscreen-controls.collapsed #collapseToolbar {
+    border-right: none;
+    margin-right: 0;
+}
+
+.fullscreen-controls.collapsed .fullscreen-controls-content > *:not(#collapseToolbar) {
+    display: none;
+} 

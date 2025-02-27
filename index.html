@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes & Sketching App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <div class="tool-group">
+                <button id="penTool" class="active" title="Pen"><i class="fas fa-pen"></i></button>
+                <button id="highlighterTool" title="Highlighter"><i class="fas fa-highlighter"></i></button>
+                <button id="eraserTool" title="Eraser"><i class="fas fa-eraser"></i></button>
+                <button id="textTool" title="Text"><i class="fas fa-font"></i></button>
+            </div>
+
+            <div class="tool-group">
+                <input type="range" id="brushSize" min="1" max="50" value="2" title="Brush Size">
+                <span id="brushSizeLabel">2px</span>
+            </div>
+
+            <div class="tool-group color-palette">
+                <input type="color" id="colorPicker" value="#000000" title="Color Picker">
+                <button class="color-btn active" data-color="#000000" style="background: black"></button>
+                <button class="color-btn" data-color="#808080" style="background: gray"></button>
+                <button class="color-btn" data-color="#0000FF" style="background: blue"></button>
+                <button class="color-btn" data-color="#00FF00" style="background: green"></button>
+                <button class="color-btn" data-color="#FF0000" style="background: red"></button>
+                <button class="color-btn" data-color="#FFFF00" style="background: yellow"></button>
+            </div>
+
+            <div class="tool-group">
+                <button id="themeToggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+            </div>
+
+            <div class="tool-group brush-styles">
+                <button class="brush-style active" data-brush="normal" title="Normal Brush"><i class="fas fa-paint-brush"></i></button>
+                <button class="brush-style" data-brush="rough" title="Rough Brush"><i class="fas fa-brush"></i></button>
+                <button class="brush-style" data-brush="spray" title="Spray"><i class="fas fa-spray-can"></i></button>
+                <button class="brush-style" data-brush="calligraphy" title="Calligraphy"><i class="fas fa-pen-fancy"></i></button>
+            </div>
+
+            <div class="tool-group line-styles">
+                <button class="line-style active" data-line="solid" title="Solid Line"><i class="fas fa-minus"></i></button>
+                <button class="line-style" data-line="dashed" title="Dashed Line"><i class="fas fa-ellipsis-h"></i></button>
+                <button class="line-style" data-line="dotted" title="Dotted Line"><i class="fas fa-grip-lines"></i></button>
+                <button class="line-style" data-line="double" title="Double Line"><i class="fas fa-equals"></i></button>
+            </div>
+
+            <div class="tool-group shapes">
+                <button class="shape-tool" data-shape="line" title="Line"><i class="fas fa-minus"></i></button>
+                <button class="shape-tool" data-shape="rectangle" title="Rectangle"><i class="far fa-square"></i></button>
+                <button class="shape-tool" data-shape="circle" title="Circle"><i class="far fa-circle"></i></button>
+                <button class="shape-tool" data-shape="triangle" title="Triangle"><i class="fas fa-play"></i></button>
+            </div>
+
+            <div class="tool-group">
+                <select id="backgroundStyle">
+                    <option value="plain">Plain</option>
+                    <option value="grid">Grid</option>
+                    <option value="lined">Lined</option>
+                    <option value="dotted">Dotted</option>
+                </select>
+            </div>
+
+            <div class="tool-group">
+                <button id="undoBtn" title="Undo"><i class="fas fa-undo"></i></button>
+                <button id="redoBtn" title="Redo"><i class="fas fa-redo"></i></button>
+                <button id="clearCanvas" title="Clear"><i class="fas fa-trash"></i></button>
+            </div>
+
+            <div class="highlighter-colors">
+                <button class="highlighter-btn" data-color="#ffeb3b" style="background: #ffeb3b">
+                    <i class="fas fa-highlighter"></i>
+                </button>
+                <button class="highlighter-btn" data-color="#4caf50" style="background: #4caf50">
+                    <i class="fas fa-highlighter"></i>
+                </button>
+                <button class="highlighter-btn" data-color="#ff9687" style="background: #ff9687">
+                    <i class="fas fa-highlighter"></i>
+                </button>
+                <button class="highlighter-btn" data-color="#90caf9" style="background: #90caf9">
+                    <i class="fas fa-highlighter"></i>
+                </button>
+            </div>
+
+            <div class="tool-group">
+                <button id="fullscreenToggle" title="Toggle Fullscreen"><i class="fas fa-expand"></i></button>
+            </div>
+
+            <div class="tool-group file-actions">
+                <button id="saveFile" title="Save File"><i class="fas fa-save"></i></button>
+                <button id="loadFile" title="Load File"><i class="fas fa-folder-open"></i></button>
+                <button id="exportPDF" title="Export PDF"><i class="fas fa-file-export"></i></button>
+                <input type="file" id="fileInput" accept=".bkl" style="display: none;">
+            </div>
+
+            <div class="tool-group">
+                <button id="importPDF" title="Import PDF"><i class="fas fa-file-pdf"></i></button>
+                <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;">
+            </div>
+        </div>
+
+        <div class="workspace">
+            <div class="page-sidebar">
+                <button id="collapseSidebar" class="collapse-btn" title="Toggle Sidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="page-actions">
+                    <button id="sidebarAddPage" class="add-page-btn" title="Add Page">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button id="sidebarDeletePage" class="delete-page-btn" title="Delete Page">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="page-thumbnails">
+                    <!-- Page previews will be added here dynamically -->
+                </div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="drawingCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <div id="textOverlay" class="hidden">
+        <div class="text-editor">
+            <div class="text-toolbar">
+                <select id="fontFamily">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Georgia">Georgia</option>
+                </select>
+                <select id="fontSize">
+                    <option value="12">12px</option>
+                    <option value="16">16px</option>
+                    <option value="20">20px</option>
+                    <option value="24">24px</option>
+                    <option value="32">32px</option>
+                    <option value="48">48px</option>
+                </select>
+                <div class="text-style-buttons">
+                    <button id="boldText" title="Bold"><i class="fas fa-bold"></i></button>
+                    <button id="italicText" title="Italic"><i class="fas fa-italic"></i></button>
+                    <button id="underlineText" title="Underline"><i class="fas fa-underline"></i></button>
+                    <input type="color" id="textColor" value="#000000" title="Text Color">
+                </div>
+            </div>
+            <textarea id="textInput" placeholder="Type your text here..."></textarea>
+            <div class="text-actions">
+                <button id="applyText">Add Text</button>
+                <button id="cancelText">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div class="fullscreen-controls hidden">
+        <div class="fullscreen-controls-content">
+            <button id="collapseToolbar" title="Toggle Toolbar"><i class="fas fa-chevron-left"></i></button>
+            <div class="minimal-tools">
+                <button id="minimalPen" class="active" title="Pen"><i class="fas fa-pen"></i></button>
+                <button id="minimalHighlighter" title="Highlighter"><i class="fas fa-highlighter"></i></button>
+                <button id="minimalEraser" title="Eraser"><i class="fas fa-eraser"></i></button>
+                <div class="brush-size-control">
+                    <input type="range" id="brushSizeFullscreen" min="1" max="50" value="2" title="Brush Size">
+                    <span id="brushSizeLabelFullscreen">2px</span>
+                </div>
+                <div class="page-navigation">
+                    <button id="prevPageFullscreen" title="Previous Page"><i class="fas fa-chevron-left"></i></button>
+                    <span id="pageIndicatorFullscreen">Page 1/1</span>
+                    <button id="nextPageFullscreen" title="Next Page"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="page-actions-fullscreen">
+                    <button id="minimalAddPage" title="New Page"><i class="fas fa-plus"></i></button>
+                    <button id="deletePageFullscreen" title="Delete Page"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            <div class="minimal-colors">
+                <button class="color-btn active" data-color="#000000" style="background: black"></button>
+                <button class="color-btn" data-color="#ff0000" style="background: red"></button>
+                <button class="color-btn" data-color="#0000ff" style="background: blue"></button>
+                <button class="color-btn" data-color="#00ff00" style="background: green"></button>
+            </div>
+            <button id="exitFullscreen" title="Exit Fullscreen"><i class="fas fa-compress"></i></button>
+            <div class="zoom-control">
+                <button id="zoomOut" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+                <span id="zoomLevel">100%</span>
+                <button id="zoomIn" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+            </div>
+        </div>
+    </div>
+    <button class="fullscreen-toggle-btn hidden">
+        <i class="fas fa-bars"></i>
+    </button>
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</body>
+</html> 
