@@ -3,6 +3,8 @@
 ## Overview
 HandWrittenNotesTaker is a web-based application that allows users to create, edit, and manage handwritten notes and sketches. The app provides various tools for drawing, text input, and background customization, making it a versatile tool for note-taking and sketching.
 
+![App Screenshot](images/01.png)
+
 ## Features
 - **Drawing Tools**: Pen, highlighter, eraser, and text tools.
 - **Brush Size Control**: Adjust the size of the drawing brush.
@@ -35,7 +37,9 @@ HandWrittenNotesTaker is a web-based application that allows users to create, ed
 
 ### Usage
 1. **Drawing**: Select the pen tool and start drawing on the canvas. Use the highlighter for highlighting text or areas.
+   ![Drawing Example](images/image02.png)
 2. **Text Input**: Click the text tool to open the text editor. Type your text and format it using the toolbar options.
+   ![Text Input Example](images/image03.png)
 3. **Brush Size and Color**: Adjust the brush size using the slider and select a color using the color picker.
 4. **Background Style**: Choose your preferred background style from the dropdown menu.
 5. **Page Management**: Use the sidebar to add or delete pages. Navigate through pages using the provided buttons.
@@ -46,6 +50,7 @@ HandWrittenNotesTaker is a web-based application that allows users to create, ed
 
 ## Contributing
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+
 ## Credits
 Created By Nafees Ansari
 - Portfolio: #
